@@ -45,18 +45,21 @@ const pool = mariadb.createPool({
 
 
   
-  const addOneUser = async(userId, userName, userEmail) => {
+  const addUser = async(id, pwd, name, nick, email, hint) => {
     let conn; // 연결설정 변수(연결 POOL)
+    //const saltRounds = 10;
+    //const hashedPwd = await bcrypt.hash(pwd, saltRounds); // 해싱된 비밀번호 생성
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("INSERT INTO users(id, name, email) VALUES (?,?,?)", [userId, userName, userEmail]);
+        const rows = await conn.query("INSERT INTO users(id, pwd, name, nickname, email, pwd_hint) VALUES (?,?,?,?,?,?)", [id, pwd, name, nick, email, hint]);
         return rows;
     } catch(err) {
         console.log(err);
         return conn.release()
 
     } finally {
-        if(conn) conn.end();
+        if(conn) conn.end(); // pool 자체 종료 --> 시간, 네트워크 --> 개발비용 증가 
+        // .end() : 연결 중단 , .release();
     }
   }
 
@@ -65,7 +68,7 @@ const pool = mariadb.createPool({
   const userModel = {
     getAllUsers,
     getOneUser,
-    addOneUser
+    addUser
   }
 
   export default userModel;

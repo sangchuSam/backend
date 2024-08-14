@@ -11,6 +11,8 @@ import morgan from "morgan";
 dotenv.config();
 import userRouter from "./routes/userRoutes.js"
 
+
+
 const app = express()
 const port = process.env.PORT || 4000;
 
@@ -20,6 +22,10 @@ app.use(cors()); // CORS policy
 app.use(morgan("dev"));
 // route : .get(): 받기, .post(): 보내기, .put(): 보내서 부분 수정, .delete() : 보내서 삭제
 // RESTful API : REpresentational (대표성 있는 방식으로 요청 URL을 생성하는 규칙)
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname+"/public/index.html");
+})
 
 app.use("/", userRouter);
 
